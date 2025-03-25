@@ -1,20 +1,11 @@
-const mysql = require('mysql2');
-const readlineSync = require('readline-sync');
-
-function checkDatabasePassword() {
-  return readlineSync.question('Enter your database password: ', {
-    hideEchoBack: true 
-  });
-}
+8const mysql = require('mysql2');
 
 function connectToDatabase() {
-  const password = checkDatabasePassword();
-  
   const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', 
-    password: password,
-    database: 'my_database' 
+    host: 'localhost', 
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME 
   });
 
   connection.connect((err) => {
@@ -24,6 +15,7 @@ function connectToDatabase() {
     }
     console.log('Connected as id ' + connection.threadId);
 
+    // Example query
     connection.query('SELECT * FROM users', (error, results) => {
       if (error) throw error;
       console.log(results);

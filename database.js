@@ -18,11 +18,21 @@ function connectToDatabase() {
 
     // Example query
     connection.query('SELECT * FROM users', (error, results) => {
-      if (error) throw error;
-      console.log(results);
-      connection.end();
+      if (error) {
+        console.error('Error executing query: ' + error.stack);
+        connection.end(); // Ensure connection is closed on error
+        return;
+      }
+      console.log('Query results:', results);
+      connection.end(); // Close the connection after the query
     });
+  });
+
+  // Handle connection errors
+  connection.on('error', (err) => {
+    console.error('Database connection error: ' + err.stack);
   });
 }
 
+// Call the function to connect to the database
 connectToDatabase();

@@ -1,49 +1,26 @@
-name: DB Testing CI
+name: Datebase testing
 
 on:
   push:
-    branches:
-      - main  # Change this to your branch name
+    branches: [ main ]
   pull_request:
-    branches:
-      - main  # Change this to your branch name
+    branches: [ main ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_DB_HOST : root
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }}  
-          MYSQL_USER: ${{ secrets.DB_USER }}  
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=3
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
+    - uses: actions/checkout@v2
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
+        node-version: '14' 
+    - run: npm install
+    - run: node database.js
       env:
-        DB_HOST: 127.0.0.1
-        DB_USER: ${{ secrets.DB_USER }}     
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }} 
-        DB_NAME: ${{ secrets.DB_NAME }}        
-      run: node database.js
+        DB_USER: ${{ secrets.DB_USER }}       
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME }}  
+      

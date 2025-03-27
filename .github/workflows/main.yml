@@ -1,26 +1,34 @@
-name: Datebase testing
+name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # Change to your branch name
   pull_request:
-    branches: [ main ]
+    branches:
+      - main  # Change to your branch name
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14' 
-    - run: npm install
-    - run: node database.js
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
       env:
-        DB_USER: ${{ secrets.DB_USER }}       
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_NAME: ${{ secrets.DB_NAME }}  
-      
+        DB_HOST: ${{ secrets.DB_HOST }}      # Use secret for database host
+        DB_PORT: ${{ secrets.DB_PORT }}      # Use secret for database port
+        DB_USER: ${{ secrets.DB_USER }}      # Use secret for database user
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # Use secret for database password
+        DB_NAME: ${{ secrets.DB_NAME }}        # Use secret for database name
+      run: node database.js
